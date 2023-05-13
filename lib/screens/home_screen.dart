@@ -1,13 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_spotter/screens/constants.dart' as k;
-
 import 'dart:convert';
+
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isLoaded = false;
   num temp = 0;
-
   num press = 0;
   num hum = 0;
   num cover = 0;
@@ -30,8 +27,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    fetchfromDevice();
+
     super.initState();
-    getCurrentLocation();
+  }
+
+  Future fetchfromDevice() async {
+    bool status = await requestPermission();
+    if (status) {
+      getCurrentLocation();
+    }
+  }
+
+  //  request for permission of storage
+  Future requestPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('true');
+      return true;
+    } else {
+      print('false');
+      return false;
+    }
   }
 
   getCurrentLocation() async {
@@ -62,15 +79,31 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } else {
       updateUI(null);
+
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Enter a valid Location'),
+              backgroundColor: Colors.greenAccent,
+              title: Column(
+                children: [
+                  SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: Image.asset(
+                        'assets/emoji-emojis.gif',
+                        fit: BoxFit.contain,
+                      )),
+                  const Text(
+                    'Location Not Found',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
             );
           });
 
-      Timer(Duration(seconds: 1), () {
+      Timer(const Duration(seconds: 3), () {
         Navigator.pop(context);
       });
       print(response.statusCode);
@@ -142,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: 60,
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
@@ -153,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ])),
               child: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 100,
                   ),
                   SizedBox(
@@ -162,10 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Image.asset(
                         'assets/04n.png',
                       )),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(
+                  const Text(
                     'Cloud Spotter',
                     style: TextStyle(
                         color: Colors.black,
@@ -239,16 +272,41 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 28,
                         overflow: TextOverflow.ellipsis),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 1,
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.my_location_outlined,
                       size: 30,
                     ),
                     onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.greenAccent,
+                              title: Column(
+                                children: [
+                                  SizedBox(
+                                      height: 150,
+                                      width: 150,
+                                      child: Image.asset(
+                                        'assets/waiting...gif',
+                                        fit: BoxFit.contain,
+                                      )),
+                                  const Text(
+                                    'Searching Current Location',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                       getCurrentLocation();
+                      Timer(Duration(seconds: 3), () {
+                        Navigator.pop(context);
+                      });
                     },
                   )
                 ],
@@ -275,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(18))),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
                     Image.asset(
@@ -312,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(18))),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
                     Image.asset(
@@ -349,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(18))),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
                     Image.asset(
@@ -386,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(18))),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Image.asset(

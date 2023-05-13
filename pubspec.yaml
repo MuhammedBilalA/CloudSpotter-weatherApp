@@ -33,11 +33,17 @@ dependencies:
     sdk: flutter
   geolocator: ^9.0.2
   http: ^0.13.6
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
